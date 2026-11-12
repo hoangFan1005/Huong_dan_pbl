@@ -273,7 +273,7 @@
    python scripts/verify/pipeline_evidence.py --phase bootstrap --output .runtime/evidence/tri-day9-bootstrap.json
    ```
 
-   Sau khi Hoàng khởi động stack đầy đủ, chạy trace trong cùng ngày UTC rồi mới chạy các kiểm thử gián đoạn.
+   Sau khi Hoàng khởi động stack đầy đủ, chạy trace trong cùng ngày UTC rồi mới chạy các kiểm thử gián đoạn. Trace tự tạo mẫu access, auth và error của lượt kiểm.
 
    ```powershell
    python scripts/verify/pipeline_evidence.py --phase trace --bootstrap .runtime/evidence/tri-day9-bootstrap.json --output .runtime/evidence/tri-day9-trace.json

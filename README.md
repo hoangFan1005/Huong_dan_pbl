@@ -92,7 +92,7 @@ Lần cài Kibana đầu tạo các dashboard, data view và bốn luật quản
 
 - Shop chạy ở [http://127.0.0.1:8080](http://127.0.0.1:8080). Mở `/health` để xác nhận Nginx đang trả lời. Dùng `/health.php` để kiểm qua PHP và cơ sở dữ liệu.
 - Kibana chạy ở [https://localhost:5601](https://localhost:5601). Có thể xuất **CA công khai** bằng `docker compose cp elasticsearch:/usr/share/elasticsearch/config/certs/ca.crt secrets/ca.crt` và tin cậy CA trên trình duyệt dành cho lab. Đăng nhập bằng `elastic` và mật khẩu `ELASTIC_PASSWORD` đọc cục bộ từ `.env`. Xóa trust CA đã thêm khi kết thúc lab.
-- Điều kiện đạt là shop trả 200, Filebeat báo kết nối thành công đến `logstash:5044`, và có thể mở Discover để truy một request vừa tạo. Tám request khởi động giúp file access mới vượt kích thước fingerprint mặc định của Filebeat. Chạy chúng trước khi đo baseline. Chi tiết từng lớp nằm trong [runbook local](https://github.com/hoangFan1005/PBL4-demo/blob/a653ae4245002148bcafffaa6040858848c2b484/docs/runbooks/local.md).
+- Điều kiện đạt là shop trả 200, Filebeat báo kết nối thành công đến `logstash:5044`, và có thể mở Discover để truy một request vừa tạo. Tám request trên tạo dữ liệu để khám phá và thuộc lượt kiểm tra khởi động. Lượt đo baseline riêng ở buổi 5 kéo dài 30 phút. Chi tiết từng lớp nằm trong [runbook local](https://github.com/hoangFan1005/PBL4-demo/blob/a653ae4245002148bcafffaa6040858848c2b484/docs/runbooks/local.md).
 
 ### 4. Kiểm tra đường đi và kết thúc phiên
 

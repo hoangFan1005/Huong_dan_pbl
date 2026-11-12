@@ -59,7 +59,7 @@ Nguồn đối chiếu là `PBL4-demo`, nhánh `Maybe_Final` tại commit `a653a
 
    `/health` trả `ok` tại Nginx và được cấu hình tắt access log cho route này. `/health.php` trả `{"status":"ok"}` khi PHP đọc được bảng ứng dụng và có thể ghi auth log. `filebeat test output` phải nối được Logstash qua TLS. Ghi trạng thái của các dịch vụ chạy dài và exit code của hai container một lần. Bảo chuẩn bị cấu hình Kibana theo tài liệu của mình.
 
-4. Cùng Trí có thể chạy collector trace ngay trong cùng ngày UTC với lần đo E5. Collector đối chiếu tên index trace với snapshot E5 theo ngày UTC. Mốc ngày 6 dùng mẫu thủ công nếu index đã sang ngày mới.
+4. Cùng Trí có thể chạy collector trace ngay trong cùng ngày UTC với lần đo E5. Collector tự tạo request kiểm thử và đối chiếu tên index trace với snapshot E5 theo ngày UTC. Mốc ngày 6 dùng mẫu thủ công nếu index đã sang ngày mới.
 
    ```powershell
    python scripts/verify/pipeline_evidence.py --phase trace --bootstrap .runtime/evidence/pipeline-bootstrap.json --output .runtime/evidence/pipeline-trace-day1.json
@@ -206,7 +206,7 @@ Nguồn đối chiếu là `PBL4-demo`, nhánh `Maybe_Final` tại commit `a653a
    docker compose exec -T filebeat ls -l /var/log/nginx /var/log/shop /usr/share/filebeat/data
    ```
 
-   Nếu lỗi x509, đối chiếu hostname `logstash`, public CA và mount client cert/key ở đúng volume của project. Nếu lỗi DNS hoặc TCP, kiểm `docker compose ps --all logstash filebeat` và network `shipping` trong YAML. Nếu test output đạt nhưng event chưa đến, kiểm file có đủ khoảng 1 KiB để filestream nhận diện. Với lab yên tĩnh, có thể tạo thêm một nhóm nhỏ request demo khi các rule còn tắt, rồi chờ scanner và kiểm lại. [Cấu hình Filebeat hiện hành](https://github.com/hoangFan1005/PBL4-demo/blob/a653ae4245002148bcafffaa6040858848c2b484/infra/filebeat/filebeat.yml) · [Beats input hiện hành](https://github.com/hoangFan1005/PBL4-demo/blob/a653ae4245002148bcafffaa6040858848c2b484/infra/logstash/pipelines/00-input.conf)
+   Nếu lỗi x509, đối chiếu hostname `logstash`, public CA và mount client cert/key ở đúng volume của project. Nếu lỗi DNS hoặc TCP, kiểm `docker compose ps --all logstash filebeat` và network `shipping` trong YAML. Nếu test output đạt nhưng event chưa đến, kiểm file có dòng mới, mount đúng và chờ scanner. Filebeat 9.5.3 mặc định hỗ trợ growing fingerprint để theo dõi cả file dưới 1 KiB. [File identity của Filebeat](https://www.elastic.co/docs/reference/beats/filebeat/file-identity) · [Cấu hình Filebeat hiện hành](https://github.com/hoangFan1005/PBL4-demo/blob/a653ae4245002148bcafffaa6040858848c2b484/infra/filebeat/filebeat.yml) · [Beats input hiện hành](https://github.com/hoangFan1005/PBL4-demo/blob/a653ae4245002148bcafffaa6040858848c2b484/infra/logstash/pipelines/00-input.conf)
 
 3. Tạo thêm 404 bằng helper và nhờ Trí tìm `request.id` trong index access. Trả cấu hình Nginx/Filebeat về bản chuẩn sau bài thực hành để cả nhóm dùng cùng mốc từ ngày 4.
 
@@ -264,7 +264,7 @@ Nguồn đối chiếu là `PBL4-demo`, nhánh `Maybe_Final` tại commit `a653a
    | Điền từ dòng auth | 401 /login.php | `shop.auth` | ID từ cùng POST | Index + Discover |
    | Điền từ lần chạy | 403 / marker bị chặn | `nginx.error` | URI + khung giờ UTC | Index + Discover |
 
-**Đạt khi** cùng một bộ marker được nhìn thấy ở log nguồn và Elasticsearch/Discover. Nếu error chưa xuất hiện trên file mới, kiểm kích thước và dùng 8 request 403 có kiểm soát như probe của repo trong một cửa sổ riêng.
+**Đạt khi** cùng một bộ marker được nhìn thấy ở log nguồn và Elasticsearch/Discover. Nếu error chưa tới, xác nhận Nginx đã tạo dòng `access forbidden by rule`, rồi kiểm path, thời gian và Logstash.
 
 ### Ngày 7 — 30 phút học, 60 phút diễn tập, 30 phút kiểm chéo
 
