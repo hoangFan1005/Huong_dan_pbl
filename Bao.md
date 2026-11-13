@@ -244,17 +244,17 @@ flowchart LR
    python -m unittest discover -s tests/tooling -p test_dashboard_content.py -v
    ```
 
-2. Mở lại ba dashboard. Tạo marker mới trong project mới, chọn cửa sổ cố định, so ba ô đếm với bảng nguồn, kiểm màu và mở ba liên kết Discover. Kiểm cả cửa sổ trống để biết rate/p95 hiển thị thế nào khi thiếu mẫu. Chụp enabled, lịch, grouping và query trong Rules trước/sau `--dashboards-only` để xác nhận cập nhật UI giữ cấu hình rule. Khi trở lại project cũ đã bật rule, dùng cùng lệnh để thử giữ trạng thái đang bật.
-
-   ```powershell
-   python scripts/bootstrap/install_kibana.py --dashboards-only
-   ```
-
-3. Dùng export tạo ở bước 1 để kiểm import saved objects trong Space dùng một lần. Kiểm roundtrip rule với trạng thái mặc định đang tắt trên project mới. Nếu kiểm thêm project cũ đang bật, truyền đúng `--baseline` của lượt đã cài và xác minh rule vẫn đang dùng baseline đó trước khi đọc lại.
+2. Dùng ngay NDJSON vừa xuất ở bước 1 để kiểm import saved objects trong Space dùng một lần. Chạy trước mọi thao tác lưu dashboard hoặc cập nhật `--dashboards-only`. Verifier đối chiếu export với object nguồn hiện tại, nên nếu đã sửa object, chạy lại bước 1 để lấy export mới. Kiểm roundtrip rule với trạng thái mặc định đang tắt trên project mới. Nếu kiểm thêm project cũ đang bật, truyền đúng `--baseline` của lượt đã cài và xác minh rule vẫn đang dùng baseline đó trước khi đọc lại.
 
    ```powershell
    python scripts/verify/kibana_roundtrip.py --export .runtime/evidence/bao/kibana-export.ndjson --output .runtime/evidence/bao/kibana-roundtrip.json
    python scripts/verify/rule_roundtrip.py --export .runtime/evidence/bao/rules-export.json --output .runtime/evidence/bao/rules-roundtrip.json
+   ```
+
+3. Mở lại ba dashboard. Tạo marker mới trong project mới, chọn cửa sổ cố định, so ba ô đếm với bảng nguồn, kiểm màu và mở ba liên kết Discover. Kiểm cả cửa sổ trống để biết rate/p95 hiển thị thế nào khi thiếu mẫu. Chụp enabled, lịch, grouping và query trong Rules trước/sau `--dashboards-only` để xác nhận cập nhật UI giữ cấu hình rule. Khi trở lại project cũ đã bật rule, dùng cùng lệnh để thử giữ trạng thái đang bật.
+
+   ```powershell
+   python scripts/bootstrap/install_kibana.py --dashboards-only
    ```
 
 **Đạt:** một thành viên khác dựng lại lab, mở được ba phiên quản lý và truy lại đúng marker mới. Lưu trạng thái roundtrip thực tế. Ghi riêng kiểm tra API/queries, render browser/EMS và live lifecycle. Rà nội dung trước khi đưa ảnh hay mẫu log vào tài liệu nhóm.
